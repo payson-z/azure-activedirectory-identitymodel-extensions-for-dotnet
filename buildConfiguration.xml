@@ -23,6 +23,9 @@
       <nugetVersion>"Microsoft.IdentityModel.Tokens": "5.1.4</nugetVersion>
     </dependency>
     <dependency>
+      <nugetVersion>"Microsoft.IdentityModel.Xml": "5.1.4</nugetVersion>
+    </dependency>
+    <dependency>
       <nugetVersion>"Microsoft.IdentityModel.Tokens.Saml": "5.1.4</nugetVersion>
     </dependency>
     <dependency>

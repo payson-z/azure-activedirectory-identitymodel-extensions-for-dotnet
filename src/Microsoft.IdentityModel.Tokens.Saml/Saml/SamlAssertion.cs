@@ -25,14 +25,13 @@
 //
 //------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Security.Cryptography;
 using System.Xml;
-using System;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Xml;
 
 namespace Microsoft.IdentityModel.Tokens.Saml
 {
