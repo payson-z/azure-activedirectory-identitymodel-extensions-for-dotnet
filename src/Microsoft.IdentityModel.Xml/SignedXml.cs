@@ -22,7 +22,7 @@ namespace Microsoft.IdentityModel.Xml
         {
         }
 
-        internal SignedXml(SignedInfo signedInfo, DictionaryManager dictionaryManager)
+        public SignedXml(SignedInfo signedInfo, DictionaryManager dictionaryManager)
         {
             if (signedInfo == null)
                 throw LogHelper.LogArgumentNullException(nameof(signedInfo));

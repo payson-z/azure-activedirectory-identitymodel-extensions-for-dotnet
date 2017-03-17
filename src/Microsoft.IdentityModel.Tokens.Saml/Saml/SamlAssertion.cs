@@ -235,6 +235,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             if (null == reader)
                 throw LogHelper.LogArgumentNullException(nameof(reader));
 
+            // TODO capturing of tokens, where to do this
             this.sourceData = reader.XmlTokens;
         }
 

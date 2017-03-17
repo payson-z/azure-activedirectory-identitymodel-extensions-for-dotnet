@@ -12,6 +12,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.IdentityModel.Xml
 {

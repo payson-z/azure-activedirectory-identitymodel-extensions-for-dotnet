@@ -744,7 +744,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException("ID4090"));
         }
 
-        protected virtual SamlAttribute ReadAttribute(XmlDictionaryReader reader)
+        public virtual SamlAttribute ReadAttribute(XmlDictionaryReader reader)
         {
             if (reader == null)
                 throw LogHelper.LogArgumentNullException(nameof(reader));
@@ -999,7 +999,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             writer.WriteEndElement();
         }
 
-        protected virtual void WriteAttribute(XmlDictionaryWriter writer, SamlAttribute attribute)
+        public virtual void WriteAttribute(XmlDictionaryWriter writer, SamlAttribute attribute)
         {
             if (writer == null)
                 throw LogHelper.LogArgumentNullException(nameof(writer));

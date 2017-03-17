@@ -38,6 +38,11 @@ namespace Microsoft.IdentityModel.Tokens.Saml
         DateTime _notBefore = SecurityUtils.MinUtcDateTime;
         DateTime _notOnOrAfter = SecurityUtils.MaxUtcDateTime;
 
+        internal SamlConditions()
+        {
+
+        }
+
         public SamlConditions(DateTime notBefore, DateTime notOnOrAfter)
             : this(notBefore, notOnOrAfter, null)
         {

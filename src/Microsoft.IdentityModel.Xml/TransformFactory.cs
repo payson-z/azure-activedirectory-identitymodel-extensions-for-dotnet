@@ -14,7 +14,7 @@ namespace Microsoft.IdentityModel.Xml
 
         protected TransformFactory() { }
 
-        internal static TransformFactory Instance
+        public static TransformFactory Instance
         {
             get { return instance; }
         }

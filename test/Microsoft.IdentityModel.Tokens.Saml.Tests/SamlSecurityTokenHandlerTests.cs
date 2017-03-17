@@ -57,6 +57,14 @@ namespace Microsoft.IdentityModel.Tokens.Saml.Tests
             TestUtilities.SetGet(samlSecurityTokenHandler, "MaximumTokenSizeInBytes", (object)1, ExpectedException.NoExceptionExpected);
         }
 
+        [Fact]
+        public void CreateToken()
+        {
+            var tokenHandler = new SamlSecurityTokenHandler();
+            var descriptor = Default.SecurityTokenDescriptor();
+            tokenHandler.CreateToken(descriptor);
+        }
+
         /*
         [Fact]
         public void Protected()

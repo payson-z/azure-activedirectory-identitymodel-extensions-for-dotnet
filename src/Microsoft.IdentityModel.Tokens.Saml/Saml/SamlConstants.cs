@@ -2,6 +2,8 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //-----------------------------------------------------------------------------
 
+using Microsoft.IdentityModel.Xml;
+
 namespace Microsoft.IdentityModel.Tokens.Saml
 {
     public static class SamlConstants

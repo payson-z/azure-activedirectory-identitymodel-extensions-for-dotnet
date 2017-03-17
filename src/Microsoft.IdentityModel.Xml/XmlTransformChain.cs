@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Logging;
 
 namespace Microsoft.IdentityModel.Xml
 {
-    sealed class XmlTransformChain
+    public class XmlTransformChain
     {
         string prefix = SignedXml.DefaultPrefix;
         

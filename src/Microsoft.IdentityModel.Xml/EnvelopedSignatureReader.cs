@@ -76,7 +76,7 @@ namespace Microsoft.IdentityModel.Xml
         /// The buffer is available after the XML has been read and
         /// signature validated.
         /// </summary>
-        internal XmlTokenStream XmlTokens
+        public XmlTokenStream XmlTokens
         {
             get
             {

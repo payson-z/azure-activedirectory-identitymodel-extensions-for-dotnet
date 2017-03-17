@@ -259,7 +259,7 @@ namespace Microsoft.IdentityModel.Xml
     }
 
     // whitespace preservation convention: ws1 immediately inside open tag; ws2 immediately after end tag.
-    class StandardSignedInfo : SignedInfo
+    public class StandardSignedInfo : SignedInfo
     {
         string prefix = SignedXml.DefaultPrefix;
         List<XmlReference> references;

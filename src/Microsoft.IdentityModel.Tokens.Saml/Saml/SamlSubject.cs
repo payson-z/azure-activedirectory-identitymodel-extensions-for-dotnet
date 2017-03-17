@@ -56,7 +56,13 @@ namespace Microsoft.IdentityModel.Tokens.Saml
         {
         }
 
-        public SamlSubject(string nameFormat, string nameQualifier, string name, IEnumerable<string> confirmations, string confirmationData, SecurityKeyIdentifier securityKeyIdentifier)
+        public SamlSubject(
+            string nameFormat,
+            string nameQualifier,
+            string name,
+            IEnumerable<string> confirmations,
+            string confirmationData,
+            SecurityKeyIdentifier securityKeyIdentifier)
         {
             if (confirmations != null)
             {

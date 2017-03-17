@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.IdentityModel.Xml
 {
-    sealed class XmlReference
+    public class XmlReference
     {
         ElementWithAlgorithmAttribute digestMethodElement;
         DigestValueElement digestValueElement = new DigestValueElement();
