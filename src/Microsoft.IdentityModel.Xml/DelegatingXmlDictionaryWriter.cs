@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Logging;
 
 namespace Microsoft.IdentityModel.Xml
 {
-
     /// <summary>
     /// Class wraps a given writer and delegates all XmlDictionaryWriter calls 
     /// to the inner wrapped writer.

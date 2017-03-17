@@ -36,6 +36,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Xml;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Xml;
 
 namespace Microsoft.IdentityModel.Tokens.Saml
 {
@@ -239,7 +240,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             var conditions = CreateConditions(tokenDescriptor);
             var advice = CreateAdvice(tokenDescriptor);
             // TODO - GUID is not correct form.
-            var assertion = new SamlAssertion(Guid.NewGuid().ToString(), tokenDescriptor.Issuer, DateTime.UtcNow, conditions, advice, statements);
+            var assertion = new SamlAssertion("_" + Guid.NewGuid().ToString(), tokenDescriptor.Issuer, DateTime.UtcNow, conditions, advice, statements);
             assertion.SigningCredentials = tokenDescriptor.SigningCredentials;
             return new SamlSecurityToken(assertion);
 
@@ -1021,7 +1022,8 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             if (samlSecurityToken == null)
                 throw LogHelper.LogExceptionMessage(new ArgumentException(String.Format(CultureInfo.InvariantCulture, LogMessages.IDX10400, GetType(), typeof(SamlSecurityToken), token.GetType())));
 
-            throw new NotImplementedException();
+            var envelopedWriter = new EnvelopedSignatureWriter(writer, samlSecurityToken.Assertion.SigningCredentials, Guid.NewGuid().ToString());
+            serializer.WriteToken(envelopedWriter, samlSecurityToken);
         }
     }
 }

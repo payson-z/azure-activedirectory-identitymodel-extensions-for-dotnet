@@ -25,6 +25,10 @@
 //
 //------------------------------------------------------------------------------
 
+using System;
+using System.IO;
+using System.Text;
+using System.Xml;
 using Microsoft.IdentityModel.Tokens.Saml;
 using Microsoft.IdentityModel.Tokens.Tests;
 using Xunit;
@@ -62,7 +66,13 @@ namespace Microsoft.IdentityModel.Tokens.Saml.Tests
         {
             var tokenHandler = new SamlSecurityTokenHandler();
             var descriptor = Default.SecurityTokenDescriptor();
-            tokenHandler.CreateToken(descriptor);
+            var token = tokenHandler.CreateToken(descriptor);
+            var ms = new StringBuilder();
+            var writer = XmlWriter.Create(ms);
+            tokenHandler.WriteToken(writer, token);
+            writer.Flush();
+            var saml = ms.ToString();
+            Console.WriteLine($"samltoken: {saml}");
         }
 
         /*

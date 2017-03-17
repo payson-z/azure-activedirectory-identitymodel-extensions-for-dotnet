@@ -923,7 +923,6 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             try
             {
                 writer.WriteStartElement(dictionary.PreferredPrefix.Value, dictionary.Assertion, dictionary.Namespace);
-
                 writer.WriteStartAttribute(dictionary.MajorVersion, null);
                 writer.WriteValue(SamlConstants.MajorVersionValue);
                 writer.WriteEndAttribute();
@@ -969,15 +968,24 @@ namespace Microsoft.IdentityModel.Tokens.Saml
 
             var attributeStatement = statement as SamlAttributeStatement;
             if (attributeStatement != null)
+            {
                 WriteAttributeStatement(writer, attributeStatement);
+                return;
+            }
 
             var authenticationStatement = statement as SamlAuthenticationStatement;
             if (authenticationStatement != null)
+            {
                 WriteAuthenticationStatement(writer, authenticationStatement);
+                return;
+            }
 
             var authorizationStatement = statement as SamlAuthorizationDecisionStatement;
             if (authorizationStatement != null)
+            {
                 WriteAuthorizationDecisionStatement(writer, authorizationStatement);
+                return;
+            }
 
             throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException($"unknown statement type: {statement.GetType()}."));
         }

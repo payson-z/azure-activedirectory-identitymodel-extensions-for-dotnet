@@ -57,6 +57,17 @@ namespace Microsoft.IdentityModel.Xml
             set { _transformFactory = value; }
         }
 
+        public void ComputeSignature(SigningCredentials credentials)
+        {
+            // TODO - shouldn't need to create the hash algorithm.
+            //var hash = credentials.CryptoProviderFactory.CreateHashAlgorithm(credentials.Algorithm);
+            var hash = credentials.Key.CryptoProviderFactory.CreateHashAlgorithm(SecurityAlgorithms.Sha256);
+            this.Signature.SignedInfo.ComputeReferenceDigests();
+            this.Signature.SignedInfo.ComputeHash(hash);
+            byte[] signature = hash.Hash;
+            this.Signature.SetSignatureValue(signature);
+        }
+
         void ComputeSignature(KeyedHashAlgorithm hash)
         {
             this.Signature.SignedInfo.ComputeReferenceDigests();
