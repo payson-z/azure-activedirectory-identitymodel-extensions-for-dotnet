@@ -73,6 +73,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml.Tests
             writer.Flush();
             var saml = ms.ToString();
             Console.WriteLine($"samltoken: {saml}");
+            var samlToken = tokenHandler.ReadToken(saml);
         }
 
         /*

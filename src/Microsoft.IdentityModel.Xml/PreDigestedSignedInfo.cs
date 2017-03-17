@@ -4,7 +4,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using System.Xml;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +15,6 @@ namespace Microsoft.IdentityModel.Xml
         const int InitialReferenceArraySize = 8;
         bool addEnvelopedSignatureTransform;
         int count;
-        string digestMethod;
         XmlDictionaryString digestMethodDictionaryString;
         ReferenceEntry[] references;
 
@@ -26,7 +24,14 @@ namespace Microsoft.IdentityModel.Xml
             this.references = new ReferenceEntry[InitialReferenceArraySize];
         }
 
-        public PreDigestedSignedInfo(DictionaryManager dictionaryManager, string canonicalizationMethod, XmlDictionaryString canonicalizationMethodDictionaryString, string digestMethod, XmlDictionaryString digestMethodDictionaryString, string signatureMethod, XmlDictionaryString signatureMethodDictionaryString)
+        public PreDigestedSignedInfo(
+            DictionaryManager dictionaryManager,
+            string canonicalizationMethod,
+            XmlDictionaryString canonicalizationMethodDictionaryString,
+            string digestMethod,
+            XmlDictionaryString digestMethodDictionaryString,
+            string signatureMethod,
+            XmlDictionaryString signatureMethodDictionaryString)
             : base(dictionaryManager)
         {
             this.references = new ReferenceEntry[InitialReferenceArraySize];
@@ -46,8 +51,7 @@ namespace Microsoft.IdentityModel.Xml
 
         public string DigestMethod
         {
-            get { return this.digestMethod; }
-            set { this.digestMethod = value; }
+            get;set;
         }
 
         public override int ReferenceCount
@@ -115,10 +119,8 @@ namespace Microsoft.IdentityModel.Xml
             XmlDictionaryString ns = dictionaryManager.XmlSignatureDictionary.Namespace;
 
             writer.WriteStartElement(prefix, dictionaryManager.XmlSignatureDictionary.SignedInfo, ns);
-            if (this.Id != null)
-            {
-                writer.WriteAttributeString(dictionaryManager.UtilityDictionary.IdAttribute, null, this.Id);
-            }
+            if (!string.IsNullOrEmpty(Id))
+                writer.WriteAttributeString(dictionaryManager.UtilityDictionary.IdAttribute, null, Id);
             WriteCanonicalizationMethod(writer, dictionaryManager);
             WriteSignatureMethod(writer, dictionaryManager);
             for (int i = 0; i < this.count; i++)
@@ -173,7 +175,7 @@ namespace Microsoft.IdentityModel.Xml
                 }
                 else
                 {
-                    writer.WriteString(this.digestMethod);
+                    writer.WriteString(DigestMethod);
                 }
                 writer.WriteEndAttribute();
                 writer.WriteEndElement(); // DigestMethod
@@ -188,7 +190,6 @@ namespace Microsoft.IdentityModel.Xml
             writer.WriteEndElement(); // SignedInfo
         }
 
-
         struct ReferenceEntry
         {
             internal string id;
@@ -199,7 +200,7 @@ namespace Microsoft.IdentityModel.Xml
             {
                 if (useStrTransform && string.IsNullOrEmpty(id))
                 {
-                    throw LogHelper.LogExceptionMessage(new ArgumentNullException(id));
+                    throw LogHelper.LogExceptionMessage(new XmlSignedInfoException(id));
                 }
 
                 this.id = id;

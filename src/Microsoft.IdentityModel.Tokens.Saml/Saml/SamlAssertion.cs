@@ -263,7 +263,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
                 effectiveReader.MoveToContent();
                 writer.Close();
             }
-            SignedXml signedXml = new SignedXml(new StandardSignedInfo(samlSerializer.DictionaryManager), samlSerializer.DictionaryManager);
+            SignedXml signedXml = new SignedXml(new SignedInfo(samlSerializer.DictionaryManager), samlSerializer.DictionaryManager);
             signedXml.TransformFactory = TransformFactory.Instance;
             signedXml.ReadFrom(effectiveReader);
             SecurityKey securityKey = signedXml.Signature.Key;

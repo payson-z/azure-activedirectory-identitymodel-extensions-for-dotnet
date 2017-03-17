@@ -18,7 +18,7 @@ namespace Microsoft.IdentityModel.Xml
         DictionaryManager _dictionaryManager;
 
         public SignedXml(DictionaryManager dictionaryManager)
-            : this(new StandardSignedInfo(dictionaryManager), dictionaryManager)
+            : this(new SignedInfo(dictionaryManager), dictionaryManager)
         {
         }
 

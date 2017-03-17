@@ -657,20 +657,25 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             {
                 foreach (var claim in tokenDescriptor.Subject.Claims)
                 {
-                    if (claim.Type == ClaimTypes.NameIdentifier)
+                    string claimType;
+                    if (!ShortToLongClaimTypeMap.TryGetValue(claim.Type, out claimType))
+                        claimType = claim.Type;
+
+                    if (claimType == ClaimTypes.NameIdentifier)
                     {
                         // Do not allow multiple name identifier claim.
                         if (null != identityClaim)
                             throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException("ID4139:"));
+
                         identityClaim = claim;
                     }
                 }
             }
 
             // TODO - handle these special claims
-            //if (identityClaim != null)
-            //{
-            //    samlSubject.Name = identityClaim.Value;
+            if (identityClaim != null)
+            {
+                samlSubject.Name = identityClaim.Value;
             //    if (identityClaim.Properties.ContainsKey(ClaimProperties.SamlNameIdentifierFormat))
             //    {
             //        samlSubject.NameFormat = identityClaim.Properties[ClaimProperties.SamlNameIdentifierFormat];
@@ -680,7 +685,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             //    {
             //        samlSubject.NameQualifier = identityClaim.Properties[ClaimProperties.SamlNameIdentifierNameQualifier];
             //    }
-            //}
+            }
 
             //if (tokenDescriptor.Proof != null)
             //{
@@ -766,28 +771,30 @@ namespace Microsoft.IdentityModel.Tokens.Saml
                 _maximumTokenSizeInBytes = value;
             }
         }
-                 
+
         /// <summary>
         /// Deserializes from XML a token of the type handled by this instance.
         /// </summary>
         /// <param name="reader">An XML reader positioned at the token's start 
         /// element.</param>
         /// <returns>An instance of <see cref="SamlSecurityToken"/>.</returns>
-        /// <exception cref="InvalidOperationException">Is thrown if 'Configuration' or 'Configruation.IssuerTokenResolver' is null.</exception>
+        public override SecurityToken ReadToken(string token)
+        {
+            var sr = new StringReader(token);
+            var envelopedDictionaryReader = new EnvelopedSignatureReader(XmlReader.Create(sr));
+            return serializer.ReadToken(envelopedDictionaryReader);
+        }
+
+        /// <summary>
+        /// Deserializes from XML a token of the type handled by this instance.
+        /// </summary>
+        /// <param name="reader">An XML reader positioned at the token's start 
+        /// element.</param>
+        /// <returns>An instance of <see cref="SamlSecurityToken"/>.</returns>
         public override SecurityToken ReadToken(XmlReader reader, TokenValidationParameters validationParameters)
         {
             // TODO - who sets reader to XmlDictionaryReader?
-            var assertion = serializer.ReadAssertion(reader as XmlDictionaryReader);
-            //
-            // Resolve signing token if one is present. It may be deferred and signed by reference.
-            //
-            //SecurityToken token;
-
-            //TryResolveIssuerToken(assertion, Configuration.IssuerTokenResolver, out token);
-
-            //assertion.SigningToken = token;
-
-            return new SamlSecurityToken(assertion);
+            return serializer.ReadToken(reader as XmlDictionaryReader);
         }
  
         /// <summary>
@@ -990,18 +997,18 @@ namespace Microsoft.IdentityModel.Tokens.Saml
         public override string WriteToken(SecurityToken token)
         {
             if (token == null)
-            {
-                throw new ArgumentNullException("token");
-            }
+                throw LogHelper.LogArgumentNullException(nameof(token));
 
             var samlToken = token as SamlSecurityToken;
             if (samlToken == null)
-                throw LogHelper.LogExceptionMessage(new ArgumentException(String.Format(CultureInfo.InvariantCulture, LogMessages.IDX10400, GetType(), typeof(SamlSecurityToken), token.GetType())));
+                throw LogHelper.LogExceptionMessage(new ArgumentException(string.Format(CultureInfo.InvariantCulture, LogMessages.IDX10400, GetType(), typeof(SamlSecurityToken), token.GetType())));
 
             var stringBuilder = new StringBuilder();
-            using (var xmlWriter = XmlWriter.Create(stringBuilder))
+            using (var writer = XmlWriter.Create(stringBuilder))
             {
-                throw new NotImplementedException();
+                WriteToken(writer, samlToken);
+                writer.Flush();
+                return stringBuilder.ToString();
             }
         }
 

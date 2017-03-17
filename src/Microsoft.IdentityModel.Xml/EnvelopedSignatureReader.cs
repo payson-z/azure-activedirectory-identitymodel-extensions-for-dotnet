@@ -96,8 +96,9 @@ namespace Microsoft.IdentityModel.Xml
             if (NodeType == XmlNodeType.EndElement)
             {
                 _elementCount--;
-                if (_elementCount == 0)
-                    OnEndOfRootElement();
+                // TODO - read signature to be processed later
+                //if (_elementCount == 0)
+                //    OnEndOfRootElement();
             }
 
             bool result = base.Read();
@@ -126,11 +127,8 @@ namespace Microsoft.IdentityModel.Xml
         void ResolveSigningCredentials()
         {
             if (_signedXml.Signature == null || _signedXml.Signature.Key == null)
-            {
                 throw LogHelper.LogExceptionMessage(new InvalidOperationException("ID3276"));
-            }
 
-            WifSignedInfo signedInfo = _signedXml.Signature.SignedInfo as WifSignedInfo;
             _signingCredentials = new SigningCredentials(_signedXml.Signature.Key, _signedXml.Signature.SignedInfo.SignatureMethod);
         }
 

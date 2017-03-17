@@ -57,17 +57,16 @@ namespace Microsoft.IdentityModel.Tokens.Saml
 
             var dictionary = DictionaryManager.SamlDictionary;
             SamlAssertion assertion = new SamlAssertion();
-            WrappedReader wrappedReader = new WrappedReader(reader);
-            if (!wrappedReader.IsStartElement(DictionaryManager.SamlDictionary.Assertion, DictionaryManager.SamlDictionary.Namespace))
+            if (!reader.IsStartElement(DictionaryManager.SamlDictionary.Assertion, DictionaryManager.SamlDictionary.Namespace))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLElementNotRecognized"));
 
-            string attributeValue = wrappedReader.GetAttribute(DictionaryManager.SamlDictionary.MajorVersion, null);
+            string attributeValue = reader.GetAttribute(DictionaryManager.SamlDictionary.MajorVersion, null);
             if (string.IsNullOrEmpty(attributeValue))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLAssertionMissingMajorVersionAttributeOnRead"));
 
             int majorVersion = Int32.Parse(attributeValue, CultureInfo.InvariantCulture);
 
-            attributeValue = wrappedReader.GetAttribute(dictionary.MinorVersion, null);
+            attributeValue = reader.GetAttribute(dictionary.MinorVersion, null);
             if (string.IsNullOrEmpty(attributeValue))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLAssertionMissingMinorVersionAttributeOnRead"));
 
@@ -75,7 +74,7 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             if ((majorVersion != SamlConstants.MajorVersionValue) || (minorVersion != SamlConstants.MinorVersionValue))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLTokenVersionNotSupported, majorVersion, minorVersion, SamlConstants.MajorVersionValue, SamlConstants.MinorVersionValue"));
 
-            attributeValue = wrappedReader.GetAttribute(dictionary.AssertionId, null);
+            attributeValue = reader.GetAttribute(dictionary.AssertionId, null);
             if (string.IsNullOrEmpty(attributeValue))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLAssertionIdRequired"));
 
@@ -84,49 +83,49 @@ namespace Microsoft.IdentityModel.Tokens.Saml
 
             assertion.AssertionId = attributeValue;
 
-            attributeValue = wrappedReader.GetAttribute(dictionary.Issuer, null);
+            attributeValue = reader.GetAttribute(dictionary.Issuer, null);
             if (string.IsNullOrEmpty(attributeValue))
                 throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLAssertionMissingIssuerAttributeOnRead"));
 
             assertion.Issuer = attributeValue;
 
-            attributeValue = wrappedReader.GetAttribute(dictionary.IssueInstant, null);
+            attributeValue = reader.GetAttribute(dictionary.IssueInstant, null);
             // TODO - try/catch throw SamlReadException
             if (!string.IsNullOrEmpty(attributeValue))
                 assertion.IssueInstant = DateTime.ParseExact(
                     attributeValue, SamlConstants.AcceptedDateTimeFormats, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None).ToUniversalTime();
 
-            wrappedReader.MoveToContent();
-            wrappedReader.Read();
+            reader.MoveToContent();
+            reader.Read();
 
-            if (wrappedReader.IsStartElement(dictionary.Conditions, dictionary.Namespace))
+            if (reader.IsStartElement(dictionary.Conditions, dictionary.Namespace))
             {
 
-                var conditions = ReadConditions(wrappedReader);
+                var conditions = ReadConditions(reader);
                 if (conditions == null)
                     throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLUnableToLoadCondtions"));
 
                 assertion.Conditions = conditions;
             }
 
-            if (wrappedReader.IsStartElement(dictionary.Advice, dictionary.Namespace))
+            if (reader.IsStartElement(dictionary.Advice, dictionary.Namespace))
             {
-                var advice = ReadAdvice(wrappedReader);
+                var advice = ReadAdvice(reader);
                 if (advice == null)
                     throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLUnableToLoadAdvice"));
 
                 assertion.Advice = advice;
             }
 
-            while (wrappedReader.IsStartElement())
+            while (reader.IsStartElement())
             {
-                if (wrappedReader.IsStartElement(DictionaryManager.XmlSignatureDictionary.Signature, DictionaryManager.XmlSignatureDictionary.Namespace))
+                if (reader.IsStartElement(DictionaryManager.XmlSignatureDictionary.Signature, DictionaryManager.XmlSignatureDictionary.Namespace))
                 {
-                    break;
+                    reader.Skip();
                 }
                 else
                 {
-                    SamlStatement statement = ReadStatement(wrappedReader);
+                    SamlStatement statement = ReadStatement(reader);
                     if (statement == null)
                         throw LogHelper.LogExceptionMessage(new SecurityTokenException("SAMLUnableToLoadStatement"));
 
@@ -140,8 +139,8 @@ namespace Microsoft.IdentityModel.Tokens.Saml
             //if (wrappedReader.IsStartElement(samlSerializer.DictionaryManager.XmlSignatureDictionary.Signature, samlSerializer.DictionaryManager.XmlSignatureDictionary.Namespace))
             //    this.ReadSignature(wrappedReader, samlSerializer);
 
-            wrappedReader.MoveToContent();
-            wrappedReader.ReadEndElement();
+            reader.MoveToContent();
+            reader.ReadEndElement();
 
             // set as property on assertion
             //this.tokenStream = wrappedReader.XmlTokens;
@@ -597,11 +596,17 @@ namespace Microsoft.IdentityModel.Tokens.Saml
                 throw LogHelper.LogArgumentNullException(nameof(reader));
 
             SamlDictionary dictionary = DictionaryManager.SamlDictionary;
+            if (!reader.IsStartElement(dictionary.Subject, dictionary.Namespace))
+                throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException("SAMLBadSchema, not on subject node"));
 
             var subject = new SamlSubject();
 
             reader.MoveToContent();
+            if (reader.IsEmptyElement)
+                throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException("SAMLBadSchema, subject empty"));
+
             reader.Read();
+
             if (reader.IsStartElement(dictionary.NameIdentifier, dictionary.Namespace))
             {
                 subject.NameFormat = reader.GetAttribute(dictionary.NameIdentifierFormat, null);
@@ -1263,6 +1268,9 @@ namespace Microsoft.IdentityModel.Tokens.Saml
 
             if (subject == null)
                 throw LogHelper.LogArgumentNullException(nameof(subject));
+
+            if (string.IsNullOrEmpty(subject.Name) && subject.ConfirmationMethods.Count == 0)
+                throw LogHelper.LogExceptionMessage(new SamlSecurityTokenException("both name and confirmation methods can not be null"));
 
             SamlDictionary dictionary = DictionaryManager.SamlDictionary;
             writer.WriteStartElement(dictionary.PreferredPrefix.Value, dictionary.Subject, dictionary.Namespace);
