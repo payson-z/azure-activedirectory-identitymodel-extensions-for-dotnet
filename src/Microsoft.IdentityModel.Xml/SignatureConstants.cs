@@ -11,7 +11,7 @@ namespace Microsoft.IdentityModel.Xml
     /// Only constants that are absent in S.IM
     /// Definitions for namespace, attributes and elements as defined in http://www.w3.org/TR/xmldsig-core/
     /// </summary>
-    public static class XmlSignatureConstants
+    public static class SignatureConstants
     {
 #pragma warning disable 1591
         public const string Namespace = "http://www.w3.org/2000/09/xmldsig#";

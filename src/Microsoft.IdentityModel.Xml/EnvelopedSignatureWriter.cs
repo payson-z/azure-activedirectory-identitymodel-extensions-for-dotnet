@@ -58,8 +58,7 @@ namespace Microsoft.IdentityModel.Xml
             if (string.IsNullOrEmpty(referenceId))
                 LogHelper.LogArgumentNullException(nameof(referenceId));
 
-            // Remember the user's writer here. We need to finally write out the signed XML
-            // into this writer.
+            // the Signature will be written into the innerWriter.
             _dictionaryManager = new DictionaryManager();
             _innerWriter = innerWriter;
             _signingCredentials = signingCredentials;
@@ -68,22 +67,13 @@ namespace Microsoft.IdentityModel.Xml
             _endFragment = new MemoryStream();
             _writerStream = new MemoryStream();
 
-            XmlDictionaryWriter effectiveWriter = XmlDictionaryWriter.CreateTextWriter(_writerStream, Encoding.UTF8, false);
-
-            // Initialize the base writer to the newly created writer. The user should write the XML
-            // to this.
-            base.InitializeInnerWriter(effectiveWriter);
+            var effectiveWriter = XmlDictionaryWriter.CreateTextWriter(_writerStream, Encoding.UTF8, false);
+            SetCanonicalizingWriter(effectiveWriter);
             // TODO - need alg for digest
             //_hashAlgorithm = _signingCredentials.Key.CryptoProviderFactory.CreateHashAlgorithm(_signingCredentials.Algorithm);
             _hashAlgorithm = _signingCredentials.Key.CryptoProviderFactory.CreateHashAlgorithm(SecurityAlgorithms.Sha256);
             _hashStream = new HashStream(_hashAlgorithm);
-            base.InnerWriter.StartCanonicalization(_hashStream, false, null);
-
-            //
-            // Add tracing for the un-canonicalized bytes
-            //
-            _preCanonicalTracingStream = new MemoryStream();
-            base.InitializeTracingWriter(new XmlTextWriter(_preCanonicalTracingStream, Encoding.UTF8));
+            InnerWriter.StartCanonicalization(_hashStream, false, null);
         }
 
         private void ComputeSignature()

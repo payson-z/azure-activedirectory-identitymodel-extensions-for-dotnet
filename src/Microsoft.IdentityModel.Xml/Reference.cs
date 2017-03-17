@@ -10,14 +10,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.IdentityModel.Xml
 {
-    public class XmlReference
+    public class Reference
     {
         ElementWithAlgorithmAttribute digestMethodElement;
         DigestValueElement digestValueElement = new DigestValueElement();
         string id;
         string prefix = SignedXml.DefaultPrefix;
         object resolvedXmlSource;
-        readonly XmlTransformChain transformChain = new XmlTransformChain();
+        readonly TransformChain transformChain = new TransformChain();
         string type;
         string uri;
         SignatureResourcePool resourcePool;
@@ -25,17 +25,17 @@ namespace Microsoft.IdentityModel.Xml
         string referredId;
         DictionaryManager dictionaryManager;
 
-        public XmlReference(DictionaryManager dictionaryManager)
+        public Reference(DictionaryManager dictionaryManager)
             : this(dictionaryManager, null)
         {
         }
 
-        public XmlReference(DictionaryManager dictionaryManager, string uri)
+        public Reference(DictionaryManager dictionaryManager, string uri)
             : this(dictionaryManager, uri, null)
         {
         }
 
-        public XmlReference(DictionaryManager dictionaryManager, string uri, object resolvedXmlSource)
+        public Reference(DictionaryManager dictionaryManager, string uri, object resolvedXmlSource)
         {
             if (dictionaryManager == null)
                 throw LogHelper.LogArgumentNullException(nameof(dictionaryManager));
@@ -70,7 +70,7 @@ namespace Microsoft.IdentityModel.Xml
             set { this.resourcePool = value; }
         }
 
-        public XmlTransformChain TransformChain
+        public TransformChain TransformChain
         {
             get { return this.transformChain; }
         }

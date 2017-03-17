@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.IdentityModel.Xml
 {
-    public class XmlSignature
+    public class Signature
     {
         SignedXml signedXml;
         string id;
@@ -15,7 +15,7 @@ namespace Microsoft.IdentityModel.Xml
         readonly SignatureValueElement signatureValueElement = new SignatureValueElement();
         readonly SignedInfo signedInfo;
 
-        public XmlSignature(SignedXml signedXml, SignedInfo signedInfo)
+        public Signature(SignedXml signedXml, SignedInfo signedInfo)
         {
             this.signedXml = signedXml;
             this.signedInfo = signedInfo;

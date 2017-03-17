@@ -31,7 +31,7 @@ namespace Microsoft.IdentityModel.Xml
         /// Initializes the inner writer that this instance wraps.
         /// </summary>
         /// <param name="innerWriter">XmlDictionaryWriter to wrap.</param>
-        protected void InitializeInnerWriter(XmlDictionaryWriter innerWriter)
+        protected void SetCanonicalizingWriter(XmlDictionaryWriter innerWriter)
         {
             if (innerWriter == null)
                 throw LogHelper.LogArgumentNullException(nameof(innerWriter));

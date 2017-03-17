@@ -9,14 +9,14 @@ using Microsoft.IdentityModel.Logging;
 
 namespace Microsoft.IdentityModel.Xml
 {
-    public class XmlTransformChain
+    public class TransformChain
     {
         string prefix = SignedXml.DefaultPrefix;
         
         //MostlySingletonList<Transform> transforms;
         List<Transform> transforms = new List<Transform>();
 
-        public XmlTransformChain()
+        public TransformChain()
         {
         }
 

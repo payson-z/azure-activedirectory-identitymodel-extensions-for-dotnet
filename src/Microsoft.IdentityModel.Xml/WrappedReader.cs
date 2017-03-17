@@ -33,7 +33,7 @@ namespace Microsoft.IdentityModel.Xml
             }
 
             this.xmlTokens = new XmlTokenStream(32);
-            base.InitializeInnerReader(reader);
+            base.SetCanonicalizingReader(reader);
             Record();
         }
 

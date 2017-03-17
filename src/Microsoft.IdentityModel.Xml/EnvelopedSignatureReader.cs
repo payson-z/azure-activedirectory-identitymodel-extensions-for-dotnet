@@ -40,7 +40,7 @@ namespace Microsoft.IdentityModel.Xml
             _requireSignature = true;
             _wrappedReader = new WrappedReader(CreateDictionaryReader(reader));
 
-            InitializeInnerReader(_wrappedReader);
+            SetCanonicalizingReader(_wrappedReader);
         }
 
         void OnEndOfRootElement()

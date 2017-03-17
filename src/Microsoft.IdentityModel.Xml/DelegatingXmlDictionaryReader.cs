@@ -20,7 +20,7 @@ namespace Microsoft.IdentityModel.Xml
         /// Initializes the Inner reader that this instance wraps.
         /// </summary>
         /// <param name="innerReader">XmlDictionaryReader to wrap.</param>
-        protected void InitializeInnerReader(XmlDictionaryReader innerReader)
+        protected void SetCanonicalizingReader(XmlDictionaryReader innerReader)
         {
             if (innerReader == null)
                 throw LogHelper.LogArgumentNullException(nameof(innerReader));

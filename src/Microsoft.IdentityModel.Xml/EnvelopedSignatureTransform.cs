@@ -41,7 +41,7 @@ namespace Microsoft.IdentityModel.Xml
                 // as the depth, we narrow our range of support so that we require
                 // that the enveloped signature be a direct child of the element
                 // being signed.
-                reader.XmlTokens.SetElementExclusion( XmlSignatureConstants.Elements.Signature, XmlSignatureConstants.Namespace, 1 );
+                reader.XmlTokens.SetElementExclusion( SignatureConstants.Elements.Signature, SignatureConstants.Namespace, 1 );
                 return reader;
             }
 
@@ -57,7 +57,7 @@ namespace Microsoft.IdentityModel.Xml
         public override void ReadFrom(XmlDictionaryReader reader, DictionaryManager dictionaryManager, bool preserveComments)
         {
             reader.MoveToContent();
-            string algorithm = XmlUtil.ReadEmptyElementAndRequiredAttribute(reader,
+            string algorithm = Util.ReadEmptyElementAndRequiredAttribute(reader,
                 dictionaryManager.XmlSignatureDictionary.Transform, dictionaryManager.XmlSignatureDictionary.Namespace, dictionaryManager.XmlSignatureDictionary.Algorithm, out this.prefix);
             if (algorithm != this.Algorithm)
             {

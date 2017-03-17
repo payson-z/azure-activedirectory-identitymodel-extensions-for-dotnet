@@ -262,13 +262,13 @@ namespace Microsoft.IdentityModel.Xml
     public class StandardSignedInfo : SignedInfo
     {
         string prefix = SignedXml.DefaultPrefix;
-        List<XmlReference> references;
+        List<Reference> references;
         Dictionary<string, string> context;
 
         public StandardSignedInfo(DictionaryManager dictionaryManager)
             : base(dictionaryManager)
         {
-            this.references = new List<XmlReference>();
+            this.references = new List<Reference>();
         }
 
         public override int ReferenceCount
@@ -276,12 +276,12 @@ namespace Microsoft.IdentityModel.Xml
             get { return this.references.Count; }
         }
 
-        public XmlReference this[int index]
+        public Reference this[int index]
         {
             get { return this.references[index]; }
         }
 
-        public void AddReference(XmlReference reference)
+        public void AddReference(Reference reference)
         {
             reference.ResourcePool = this.ResourcePool;
             this.references.Add(reference);
@@ -353,7 +353,7 @@ namespace Microsoft.IdentityModel.Xml
             ReadSignatureMethod(reader, dictionaryManager);
             while (reader.IsStartElement(dictionaryManager.XmlSignatureDictionary.Reference, dictionaryManager.XmlSignatureDictionary.Namespace))
             {
-                XmlReference reference = new XmlReference(dictionaryManager);
+                Reference reference = new Reference(dictionaryManager);
                 reference.ReadFrom(reader, transformFactory, dictionaryManager);
                 AddReference(reference);
             }
@@ -511,7 +511,7 @@ namespace Microsoft.IdentityModel.Xml
 
         public override void ReadFrom(XmlDictionaryReader reader, TransformFactory transformFactory, DictionaryManager dictionaryManager)
         {
-            reader.MoveToStartElement(XmlSignatureConstants.Elements.SignedInfo, XmlSignatureConstants.Namespace);
+            reader.MoveToStartElement(SignatureConstants.Elements.SignedInfo, SignatureConstants.Namespace);
 
             SendSide = false;
             _defaultNamespace = reader.LookupNamespace(String.Empty);
@@ -541,7 +541,7 @@ namespace Microsoft.IdentityModel.Xml
                 CanonicalStream = new MemoryStream();
                 effectiveReader.StartCanonicalization(CanonicalStream, false, null);
 
-                effectiveReader.MoveToStartElement(XmlSignatureConstants.Elements.SignedInfo, XmlSignatureConstants.Namespace);
+                effectiveReader.MoveToStartElement(SignatureConstants.Elements.SignedInfo, SignatureConstants.Namespace);
                 Prefix = effectiveReader.Prefix;
                 // TODO - need to use dictionary
                 Id = effectiveReader.GetAttribute("Id", null);
@@ -549,9 +549,9 @@ namespace Microsoft.IdentityModel.Xml
 
                 ReadCanonicalizationMethod(effectiveReader, DictionaryManager);
                 ReadSignatureMethod(effectiveReader, DictionaryManager);
-                while (effectiveReader.IsStartElement(XmlSignatureConstants.Elements.Reference, XmlSignatureConstants.Namespace))
+                while (effectiveReader.IsStartElement(SignatureConstants.Elements.Reference, SignatureConstants.Namespace))
                 {
-                    XmlReference reference = new XmlReference(DictionaryManager);
+                    Reference reference = new Reference(DictionaryManager);
                     reference.ReadFrom(effectiveReader, transformFactory, DictionaryManager);
                     AddReference(reference);
                 }

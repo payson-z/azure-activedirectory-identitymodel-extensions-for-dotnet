@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace Microsoft.IdentityModel.Xml
 {
     // Merged System.IdentityModel.XmlUtil with Microsoft.IdentityModel.XmlUtil by porting methods from the Microsoft.IdentityModel.XmlUtil to this.
-    static class XmlUtil
+    static class Util
     {
         public const string XmlNs = "http://www.w3.org/XML/1998/namespace";
         public const string XmlNsNs = "http://www.w3.org/2000/xmlns/";
@@ -305,7 +305,7 @@ namespace Microsoft.IdentityModel.Xml
 
             XmlReader reader = new XmlNodeReader(element);
             reader.MoveToContent();
-            return XmlUtil.Trim(reader.ReadElementContentAsString());
+            return Util.Trim(reader.ReadElementContentAsString());
         }
 
         internal static void OnRequiredElementMissing(string elementName, string elementNamespace)
